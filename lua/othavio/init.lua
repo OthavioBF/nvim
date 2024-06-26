@@ -1,6 +1,6 @@
-require("theprimeagen.set")
-require("theprimeagen.remap")
-require("theprimeagen.lazy_init")
+require("othavio.set")
+require("othavio.remap")
+require("othavio.lazy_init")
 
 -- DO.not
 -- DO NOT INCLUDE THIS
