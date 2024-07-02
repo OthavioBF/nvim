@@ -9,6 +9,7 @@ return {
     "hrsh7th/cmp-cmdline",
     "hrsh7th/nvim-cmp",
     "L3MON4D3/LuaSnip",
+    "mlaursen/vim-react-snippets",
     "saadparwaiz1/cmp_luasnip",
     "j-hui/fidget.nvim",
   },
@@ -22,16 +23,18 @@ return {
       vim.lsp.protocol.make_client_capabilities(),
       cmp_lsp.default_capabilities())
 
+    require("vim-react-snippets").lazy_load()
     require("fidget").setup({})
     require("mason").setup()
     require("mason-lspconfig").setup({
       ensure_installed = {
         "lua_ls",
         "rust_analyzer",
+        "tsserver",
+        "eslint",
       },
       handlers = {
         function(server_name) -- default handler (optional)
-
           require("lspconfig")[server_name].setup {
             capabilities = capabilities
           }
@@ -72,8 +75,8 @@ return {
         { name = 'nvim_lsp' },
         { name = 'luasnip' }, -- For luasnip users.
       }, {
-          { name = 'buffer' },
-        })
+        { name = 'buffer' },
+      })
     })
 
     vim.diagnostic.config({
