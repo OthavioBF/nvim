@@ -2,16 +2,30 @@ vim.g.undotree_DiffCommand = "FC"
 vim.opt.showmode = false
 vim.opt.nu = true
 vim.opt.relativenumber = true
+vim.wo.foldmethod = 'manual'
 
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
--- vim.opt.ignorecase = true
+vim.opt.smarttab = true
+
+vim.opt.ignorecase = true
 
 vim.opt.smartindent = true
+vim.opt.breakindent = true
 
 vim.opt.wrap = false
+vim.opt.ai = true
+vim.opt.si = true
+vim.opt.wrap = false
+vim.opt.wildignore = { '*/node_modules/*' }
+
+vim.opt.cursorline = true
+vim.opt.winblend = 0
+vim.opt.wildoptions = 'pum'
+vim.opt.pumblend = 5
+vim.opt.background = 'dark'
 
 vim.opt.swapfile = false
 vim.opt.backup = false

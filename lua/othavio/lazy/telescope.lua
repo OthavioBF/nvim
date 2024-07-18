@@ -15,7 +15,13 @@ return {
     },
 
     config = function()
-      require("telescope").setup({})
+      require("telescope").setup({
+        pickers = {
+          git_files = {
+            previewer = false, -- Disable previewer for git_files
+          },
+        },
+      })
 
       local builtin = require("telescope.builtin")
       local recent_files = require("telescope").extensions.recent_files
@@ -26,7 +32,7 @@ return {
       end, {})
       vim.keymap.set("n", "<leader>gc", builtin.git_commits, {})
       vim.keymap.set("n", "<leader>gb", builtin.git_branches, {})
-      vim.keymap.set("n", "<C-p>", builtin.git_files, {})
+      vim.keymap.set("n", "<C-p>", builtin.git_files)
       vim.keymap.set("n", "<leader>pws", function()
         local word = vim.fn.expand("<cword>")
         builtin.grep_string({ search = word })
