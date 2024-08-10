@@ -19,6 +19,7 @@ local local_plugins = {
       vim.keymap.set("n", "<leader><C-j>", function() harpoon:list():replace_at(2) end)
       vim.keymap.set("n", "<leader><C-k>", function() harpoon:list():replace_at(3) end)
       vim.keymap.set("n", "<leader><C-l>", function() harpoon:list():replace_at(4) end)
+      vim.keymap.set("n", "<leader>hc", function() harpoon:list():clear() end)
     end
   },
 }

@@ -29,7 +29,6 @@ return {
     require("mason-lspconfig").setup({
       ensure_installed = {
         "lua_ls",
-        "rust_analyzer",
         "tsserver",
         "eslint",
       },
@@ -60,6 +59,7 @@ return {
     local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
     cmp.setup({
+      preselect = cmp.PreselectMode.Item,
       snippet = {
         expand = function(args)
           require('luasnip').lsp_expand(args.body) -- For `luasnip` users.

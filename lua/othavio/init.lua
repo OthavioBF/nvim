@@ -73,12 +73,12 @@ local function filter(arr, fn)
 end
 
 local function filterReactDTS(value)
-  return string.match(value.filename, 'react/index.d.ts') == nil
+  return not string.match(value.filename, 'react/index.d.ts')
 end
 
 local function on_list(options)
   local items = options.items
-  if #items > 1 then
+  if type(items) == "table" and #items > 1 then
     items = filter(items, filterReactDTS)
   end
 
