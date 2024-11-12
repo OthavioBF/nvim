@@ -1,6 +1,7 @@
 return {
   "nvim-lua/plenary.nvim",
-  { "nvchad/volt", lazy = false },
+  { "tpope/vim-fugitive", lazy = false },
+  { "nvchad/volt",        lazy = false },
   {
     "nvchad/ui",
     config = function()
@@ -208,4 +209,3 @@ return {
     },
   },
 }
-
