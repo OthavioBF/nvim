@@ -1,25 +1,39 @@
-require("othavio.set")
-require("othavio.remap")
-require("othavio.lazy_init")
+vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46_cache/"
+vim.g.mapleader = " "
 
-local augroup = vim.api.nvim_create_augroup
-local ThePrimeagenGroup = augroup("ThePrimeagen", {})
-
-local autocmd = vim.api.nvim_create_autocmd
-local yank_group = augroup("HighlightYank", {})
-
-function R(name)
-  require("plenary.reload").reload_module(name)
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out,                            "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
 end
+vim.opt.rtp:prepend(lazypath)
 
-vim.filetype.add({
-  extension = {
-    templ = "templ",
-  },
-})
+require("lazy").setup("othavio.plugins", require "othavio.configs.lazy")
 
-autocmd("TextYankPost", {
-  group = yank_group,
+dofile(vim.g.base46_cache .. "defaults")
+dofile(vim.g.base46_cache .. "statusline")
+dofile(vim.g.base46_cache .. "syntax")
+dofile(vim.g.base46_cache .. "treesitter")
+dofile(vim.g.base46_cache .. "telescope")
+dofile(vim.g.base46_cache .. "nvimtree")
+dofile(vim.g.base46_cache .. "mason")
+
+require "othavio.options"
+
+vim.schedule(function()
+  require "othavio.mappings"
+end)
+
+vim.api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
   callback = function()
     vim.highlight.on_yank({
@@ -27,12 +41,6 @@ autocmd("TextYankPost", {
       timeout = 40,
     })
   end,
-})
-
-autocmd({ "BufWritePre" }, {
-  group = ThePrimeagenGroup,
-  pattern = "*",
-  command = [[%s/\s\+$//e]],
 })
 
 local function set_manual_import_folds()
@@ -57,72 +65,3 @@ vim.api.nvim_create_autocmd("BufEnter", {
   callback = set_manual_import_folds,
 })
 
-local function filter(arr, fn)
-  if type(arr) ~= "table" then
-    return arr
-  end
-
-  local filtered = {}
-  for k, v in pairs(arr) do
-    if fn(v, k, arr) then
-      table.insert(filtered, v)
-    end
-  end
-
-  return filtered
-end
-
-local function filterReactDTS(value)
-  return not string.match(value.filename, 'react/index.d.ts')
-end
-
-local function on_list(options)
-  local items = options.items
-  if type(items) == "table" and #items > 1 then
-    items = filter(items, filterReactDTS)
-  end
-
-  vim.fn.setqflist({}, ' ', { title = options.title, items = items, context = options.context })
-  vim.api.nvim_command('cfirst') -- or maybe you want 'copen' instead of 'cfirst'
-end
-
-autocmd("LspAttach", {
-  group = ThePrimeagenGroup,
-  callback = function(e)
-    local opts = { buffer = e.buf }
-    vim.keymap.set("n", "gd", function()
-      vim.lsp.buf.definition({ on_list = on_list })
-    end, opts)
-    vim.keymap.set("n", "K", function()
-      vim.lsp.buf.hover()
-    end, opts)
-    vim.keymap.set("n", "<leader>vws", function()
-      vim.lsp.buf.workspace_symbol()
-    end, opts)
-    vim.keymap.set("n", "<leader>vd", function()
-      vim.diagnostic.open_float()
-    end, opts)
-    vim.keymap.set("n", "<leader>.", function()
-      vim.lsp.buf.code_action()
-    end, opts)
-    vim.keymap.set("n", "<leader>vrr", function()
-      vim.lsp.buf.references()
-    end, opts)
-    vim.keymap.set("n", "<leader>vrn", function()
-      vim.lsp.buf.rename()
-    end, opts)
-    vim.keymap.set("i", "<C-h>", function()
-      vim.lsp.buf.signature_help()
-    end, opts)
-    vim.keymap.set("n", "[d", function()
-      vim.diagnostic.goto_next()
-    end, opts)
-    vim.keymap.set("n", "]d", function()
-      vim.diagnostic.goto_prev()
-    end, opts)
-  end,
-})
-
-vim.g.netrw_browse_split = 0
-vim.g.netrw_banner = 0
-vim.g.netrw_winsize = 25
