@@ -28,7 +28,7 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
 
-        go = { "gofumpt", "goimports-reviser", "golines", args = { "--max-len=100" } },
+        go = { "gofumpt", "goimports-reviser", "golines" },
 
         kotlin = { "ktlint" },
 
