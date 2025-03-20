@@ -28,7 +28,9 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
 
-        go = { "gofumpt", "goimports-reviser", "golines" },
+        go = { "gofumpt", "goimports-reviser", "golines", args = { "--max-len=100" } },
+
+        kotlin = { "ktlint" },
 
         javascript = { "eslint_d", "prettier" },
         javascriptreact = { "eslint_d", "prettier" },
@@ -179,9 +181,14 @@ return {
               open = "",
               symlink = "",
             },
-            git = { unmerged = "" },
+            git = {
+              unmerged = ""
+            },
           },
         },
+      },
+      filters = {
+        enable = false,
       },
     },
   },

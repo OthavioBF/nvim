@@ -111,8 +111,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     vim.keymap.set("n", "<leader>gP", function()
       vim.cmd.Git('pull')
     end, opts)
-
-    vim.keymap.set("n", "<leader>t", ":Git push -u origin ", opts);
   end,
 })
 
@@ -123,3 +121,13 @@ vim.keymap.set("n", "<leader>gBd", function()
 end)
 vim.keymap.set("n", "gu", "<cmd>diffget //2<CR>")
 vim.keymap.set("n", "gh", "<cmd>diffget //3<CR>")
+
+-- NvChad Theme Picker
+
+vim.keymap.set('n', '<leader>th', function()
+  require('nvchad.themes').open()
+end)
+
+-- Php utils
+
+vim.keymap.set("v", "<leader>ru", "<cmd>'<,'>s/utf8_encode(\\([^)]*\\))/\\1/g<CR>", { silent = true })

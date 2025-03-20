@@ -1,3 +1,4 @@
+vim.opt.guicursor = "n-v-i-c:block-Cursor"
 vim.g.undotree_DiffCommand = "FC"
 vim.opt.showmode = false
 vim.opt.nu = true
@@ -42,5 +43,4 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
 
-vim.opt.colorcolumn = "80"
-vim.opt.colorcolumn = "120"
+vim.opt.colorcolumn = "80,120"

@@ -52,7 +52,7 @@ M.capabilities.textDocument.completion.completionItem = {
 M.defaults = function()
   dofile(vim.g.base46_cache .. "lsp")
   require("nvchad.lsp").diagnostic_config()
-  
+
   require("mason").setup()
   require("mason-lspconfig").setup {
     ensure_installed = { "html", "cssls", "ts_ls", "eslint", "tailwindcss", "css_variables", "gopls", "lua_ls" },
@@ -88,6 +88,22 @@ M.defaults = function()
         },
       }
     end,
+
+    ["intelephense"] = function()
+      lspconfig.intelephense.setup {
+        on_attach = M.on_attach,
+        on_init = M.on_init,
+        capabilities = M.capabilities,
+        settings = {
+          intelephense = {
+            files = {
+              maxSize = 5000000
+            },
+          },
+        },
+      }
+    end,
+
     -- Custom setup for lua_ls
     ["lua_ls"] = function()
       lspconfig.lua_ls.setup {

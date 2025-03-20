@@ -8,14 +8,14 @@ M.ui = {
   tabufline = {
     enabled = false
   },
-  
+
   cmp = {
     style = "atom"
   }
 }
 
 M.base46 = {
-  theme = "catppuccin",
+  theme = "tomorrow_night",
 }
 
 return M
