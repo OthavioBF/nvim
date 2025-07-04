@@ -55,7 +55,7 @@ M.defaults = function()
 
   require("mason").setup()
   require("mason-lspconfig").setup {
-    ensure_installed = { "html", "cssls", "ts_ls", "eslint", "tailwindcss", "css_variables", "gopls", "lua_ls" },
+    ensure_installed = { "html", "cssls", "eslint", "tailwindcss", "css_variables", "lua_ls" },
     automatic_installation = true,
   }
 
@@ -69,7 +69,16 @@ M.defaults = function()
         capabilities = M.capabilities,
       }
     end,
-    -- Custom setup for gopls
+
+    ["ts_ls"] = function()
+      lspconfig.ts_ls.setup {
+        on_attach = M.on_attach,
+        on_init = M.on_init,
+        capabilities = M.capabilities,
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+      }
+    end,
+
     ["gopls"] = function()
       lspconfig.gopls.setup {
         on_attach = M.on_attach,

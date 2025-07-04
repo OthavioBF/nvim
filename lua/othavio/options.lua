@@ -1,5 +1,6 @@
 vim.opt.guicursor = "n-v-i-c:block-Cursor"
 vim.g.undotree_DiffCommand = "FC"
+vim.g.goyo_height = "100%"
 vim.opt.showmode = false
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -38,7 +39,7 @@ vim.opt.incsearch = true
 vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 10
-vim.opt.signcolumn = "yes"
+vim.opt.signcolumn = 'yes'
 vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50

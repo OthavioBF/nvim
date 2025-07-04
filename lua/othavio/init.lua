@@ -66,7 +66,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "php", "kotlin", "go" },
+  pattern = { "php", "kotlin", "go", "js" },
   callback = function()
     vim.opt.tabstop = 4
     vim.opt.softtabstop = 4

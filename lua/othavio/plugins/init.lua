@@ -15,6 +15,54 @@ return {
       require("base46").load_all_highlights()
     end,
   },
+  -- {
+  --   "folke/zen-mode.nvim",
+  --   config = function()
+  --     require("zen-mode").setup {
+  --       window = {
+  --         backdrop = 0.8,
+  --         height = 1,
+  --         options = {
+  --           signcolumn = "yes",
+  --           number = true,
+  --           relativenumber = true,
+  --           cursorline = true,
+  --         },
+  --       },
+  --       plugins = {
+  --         options = {
+  --           enabled = true,
+  --           ruler = false,
+  --           showcmd = false,
+  --         },
+  --       },
+  --       on_open = function(win)
+  --         local total_width = vim.o.columns
+  --         local half_width = math.floor(total_width / 2)
+  --
+  --         vim.api.nvim_win_set_config(win, {
+  --           relative = 'editor',
+  --           row = 1,
+  --           col = 12,
+  --           width = half_width,
+  --         })
+  --       end,
+  --     }
+  --   end,
+  --   keys = {
+  --     { "<leader>zz", "<cmd>ZenMode<CR>", desc = "Toggle Zen Mode" },
+  --   },
+  -- },
+  {
+    "ellisonleao/dotenv.nvim",
+    config = function()
+      require("dotenv").setup({
+        enable_on_load = true,
+        verbose = false,
+      })
+    end,
+    lazy = false
+  },
   {
     "windwp/nvim-ts-autotag",
     config = function()
@@ -32,10 +80,10 @@ return {
 
         kotlin = { "ktlint" },
 
-        javascript = { "eslint_d", "prettier" },
-        javascriptreact = { "eslint_d", "prettier" },
-        typescript = { "eslint_d", "prettier" },
-        typescriptreact = { "eslint_d", "prettier" },
+        javascript = { "biome-check" },
+        javascriptreact = { "biome-check" },
+        typescript = { "biome-check" },
+        typescriptreact = { "biome-check" },
       },
       format_after_save = {
         async = true,
