@@ -3,6 +3,14 @@ return {
   { "tpope/vim-fugitive", lazy = false },
   { "nvchad/volt",        lazy = false },
   {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    event = "VeryLazy", -- Or `LspAttach`
+    priority = 1000,    -- needs to be loaded in first
+    config = function()
+      require('othavio.configs.tiny-diagnostic')
+    end
+  },
+  {
     "nvchad/ui",
     config = function()
       require "nvchad"
@@ -15,44 +23,11 @@ return {
       require("base46").load_all_highlights()
     end,
   },
-  -- {
-  --   "folke/zen-mode.nvim",
-  --   config = function()
-  --     require("zen-mode").setup {
-  --       window = {
-  --         backdrop = 0.8,
-  --         height = 1,
-  --         options = {
-  --           signcolumn = "yes",
-  --           number = true,
-  --           relativenumber = true,
-  --           cursorline = true,
-  --         },
-  --       },
-  --       plugins = {
-  --         options = {
-  --           enabled = true,
-  --           ruler = false,
-  --           showcmd = false,
-  --         },
-  --       },
-  --       on_open = function(win)
-  --         local total_width = vim.o.columns
-  --         local half_width = math.floor(total_width / 2)
-  --
-  --         vim.api.nvim_win_set_config(win, {
-  --           relative = 'editor',
-  --           row = 1,
-  --           col = 12,
-  --           width = half_width,
-  --         })
-  --       end,
-  --     }
-  --   end,
-  --   keys = {
-  --     { "<leader>zz", "<cmd>ZenMode<CR>", desc = "Toggle Zen Mode" },
-  --   },
-  -- },
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = { "Trouble", "TroubleToggle" },
+  },
   {
     "ellisonleao/dotenv.nvim",
     config = function()
@@ -67,54 +42,27 @@ return {
     "windwp/nvim-ts-autotag",
     config = function()
       require("nvim-ts-autotag").setup({})
-    end
+    end,
+    lazy = false
   },
   {
     "stevearc/conform.nvim",
     event = 'BufWritePre',
-    opts = {
-      formatters_by_ft = {
-        lua = { "stylua" },
-
-        go = { "gofumpt", "goimports-reviser", "golines" },
-
-        kotlin = { "ktlint" },
-
-        javascript = { "biome-check" },
-        javascriptreact = { "biome-check" },
-        typescript = { "biome-check" },
-        typescriptreact = { "biome-check" },
-      },
-      format_after_save = {
-        async = true,
-        lsp_fallback = true,
-      },
-    },
+    opts = function()
+      return require('othavio.configs.conform')
+    end,
   },
   {
     "mbbill/undotree",
     lazy = false,
-    config = function()
-      vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
-    end
   },
   {
     "williamboman/mason.nvim",
     lazy = false,
     cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
-    opts = {
-      PATH = "skip",
-
-      ui = {
-        icons = {
-          package_pending = " ",
-          package_installed = " ",
-          package_uninstalled = " ",
-        },
-      },
-
-      max_concurrent_installers = 10,
-    },
+    opts = function()
+      return require('othavio.configs.mason')
+    end,
   },
   {
     "williamboman/mason-lspconfig.nvim",
@@ -152,7 +100,7 @@ return {
       },
     },
     opts = function()
-      return require "othavio.configs.cmp"
+      return require("othavio.configs.cmp")
     end,
   },
   {
@@ -169,30 +117,7 @@ return {
     build = ":TSUpdate",
     lazy = false,
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "vimdoc",
-          "javascript",
-          "typescript",
-          "go",
-          "tsx",
-          "html",
-          "css",
-          "prisma",
-          "json",
-          "lua",
-          "css"
-        },
-        auto_install = true,
-        indent = {
-          enable = true,
-        },
-
-        highlight = {
-          enable = true,
-          use_languagetree = true,
-        },
-      })
+      require("othavio.configs.treesitter")
     end
   },
   {
@@ -204,63 +129,16 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-    opts = {
-      disable_netrw = true,
-      hijack_cursor = true,
-      sync_root_with_cwd = true,
-      update_focused_file = {
-        enable = true,
-        update_root = false,
-      },
-      view = {
-        width = 30,
-        preserve_window_proportions = true,
-      },
-      renderer = {
-        root_folder_label = false,
-        indent_markers = { enable = true },
-        icons = {
-          glyphs = {
-            default = "󰈚",
-            folder = {
-              default = "",
-              empty = "",
-              empty_open = "",
-              open = "",
-              symlink = "",
-            },
-            git = {
-              unmerged = ""
-            },
-          },
-        },
-      },
-      filters = {
-        enable = false,
-      },
-    },
+    opts = function()
+      return require("othavio.configs.nvim-tree")
+    end
   },
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "folke/trouble.nvim" },
     cmd = "Telescope",
-    opts = {
-      defaults = {
-        prompt_prefix = "   ",
-        selection_caret = " ",
-        entry_prefix = " ",
-        sorting_strategy = "ascending",
-        layout_config = {
-          horizontal = {
-            prompt_position = "top",
-            preview_width = 0.55,
-          },
-          width = 0.87,
-          height = 0.80,
-        },
-      },
-      extensions_list = { "themes", "terms" },
-      extensions = {},
-    },
+    config = function()
+      require("othavio.configs.telescope-trouble").setup()
+    end,
   },
 }

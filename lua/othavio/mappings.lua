@@ -35,6 +35,11 @@ vim.keymap.set('n', 'zf', 'v$%zf')
 
 vim.keymap.set({ 'n', 'i', 'v' }, '<C-s>', vim.cmd.w)
 
+vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+
+vim.keymap.set("v", "<Tab>", ">gv", { noremap = true, silent = true })
+vim.keymap.set("v", "<S-Tab>", "<gv", { noremap = true, silent = true })
+
 -- Harpoon
 
 local harpoon = require("harpoon")
@@ -114,6 +119,11 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
+vim.keymap.set("n", "<leader>gl", function()
+  local file = vim.fn.expand("%")
+  vim.cmd("Git log -- " .. file)
+end)
+
 vim.keymap.set("n", "<leader>gd", ':Gvdiffsplit HEAD<CR>', { silent = true })
 vim.keymap.set("n", "<leader>gBd", function()
   local branch = vim.fn.input("Branch > ")
@@ -132,66 +142,57 @@ end)
 
 vim.keymap.set("n", "<leader>ru", "<cmd>%s/utf8_encode(\\([^)]*\\))/\\1/g<CR>", { silent = true })
 
-vim.keymap.set("n", "<leader>n", function()
-  local env_file = vim.fs.find(".env", { upward = true, type = "file" })[1]
-
-  if not env_file then
-    print("'.env' file not found! Cannot determine project root.")
-    return
-  end
-
-  local project_root = vim.fs.dirname(env_file)
-
-  local file = vim.fn.expand("%:p")
-
-  if not file:find(project_root, 1, true) then
-    print("File is outside the project directory!")
-    return
-  end
-
-  local path = file:sub(#project_root + 1)
-  if not path then
-    print("Error extracting relative path!")
-    return
-  end
-
-  local ftp_host = vim.env.FTP_HOST
-  local ftp_port = vim.env.FTP_PORT
-  local ftp_user = vim.env.FTP_USER
-  local ftp_pass = vim.env.FTP_PASS
-  local ftp_remote_path = vim.env.FTP_REMOTE_PATH
-
-  if not (ftp_host and ftp_port and ftp_user and ftp_pass and ftp_remote_path) then
-    print("FTP credentials not set! Check your .env file.")
-    return
-  end
-
-  local cmd = string.format(
-    "lftp -u '%s','%s' -p %s %s -e 'put %s -o %s; bye'",
-    ftp_user, ftp_pass, ftp_port, ftp_host, file, ftp_remote_path .. path
-  )
-
-  local handle = io.popen(cmd)
-  if not handle then
-    vim.notify("Failed to start FTP upload command.", vim.log.levels.ERROR)
-    return
-  end
-
-  local result = handle:read("*a")
-  local ok, _, code = handle:close()
-
-  if ok then
-    vim.notify("Upload successful: " .. ftp_remote_path .. path, vim.log.levels.INFO)
-  else
-    vim.notify("Upload failed with code " .. tostring(code) .. ":\n" .. result, vim.log.levels.ERROR)
-  end
-end)
-
-vim.keymap.set("v", "<Tab>", ">gv", { noremap = true, silent = true })
-vim.keymap.set("v", "<S-Tab>", "<gv", { noremap = true, silent = true })
-
--- ZenMode
-
-vim.keymap.set("n", "<leader>zz", function()
-  require("configs.zenmode").toggle()
-end, { desc = "Toggle Zen Mode" })
+-- vim.keymap.set("n", "<leader>n", function()
+--   local env_file = vim.fs.find(".env", { upward = true, type = "file" })[1]
+--
+--   if not env_file then
+--     print("'.env' file not found! Cannot determine project root.")
+--     return
+--   end
+--
+--   local project_root = vim.fs.dirname(env_file)
+--
+--   local file = vim.fn.expand("%:p")
+--
+--   if not file:find(project_root, 1, true) then
+--     print("File is outside the project directory!")
+--     return
+--   end
+--
+--   local path = file:sub(#project_root + 1)
+--   if not path then
+--     print("Error extracting relative path!")
+--     return
+--   end
+--
+--   local ftp_host = vim.env.FTP_HOST
+--   local ftp_port = vim.env.FTP_PORT
+--   local ftp_user = vim.env.FTP_USER
+--   local ftp_pass = vim.env.FTP_PASS
+--   local ftp_remote_path = vim.env.FTP_REMOTE_PATH
+--
+--   if not (ftp_host and ftp_port and ftp_user and ftp_pass and ftp_remote_path) then
+--     print("FTP credentials not set! Check your .env file.")
+--     return
+--   end
+--
+--   local cmd = string.format(
+--     "lftp -u '%s','%s' -p %s %s -e 'put %s -o %s; bye'",
+--     ftp_user, ftp_pass, ftp_port, ftp_host, file, ftp_remote_path .. path
+--   )
+--
+--   local handle = io.popen(cmd)
+--   if not handle then
+--     vim.notify("Failed to start FTP upload command.", vim.log.levels.ERROR)
+--     return
+--   end
+--
+--   local result = handle:read("*a")
+--   local ok, _, code = handle:close()
+--
+--   if ok then
+--     vim.notify("Upload successful: " .. ftp_remote_path .. path, vim.log.levels.INFO)
+--   else
+--     vim.notify("Upload failed with code " .. tostring(code) .. ":\n" .. result, vim.log.levels.ERROR)
+--   end
+-- end)
