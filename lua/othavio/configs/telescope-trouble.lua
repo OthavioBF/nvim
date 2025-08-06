@@ -61,9 +61,9 @@ function M.setup()
   vim.keymap.set('n', '<leader>fR', builtin.lsp_references, { desc = 'References (use <C-t> to send to Trouble)' })
 
   -- Git integration
+  vim.keymap.set("n", "<C-p>", builtin.git_files)
   vim.keymap.set('n', '<leader>gc', builtin.git_commits, { desc = 'Git commits' })
   vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = 'Git branches' })
-  vim.keymap.set('n', '<leader>gs', builtin.git_status, { desc = 'Git status' })
 
   -- Custom functions for better telescope-trouble workflow
   vim.keymap.set('n', '<leader>fD', function()
@@ -84,6 +84,11 @@ function M.setup()
   vim.keymap.set('n', '<leader>td', function()
     trouble.toggle("workspace_diagnostics")
   end, { desc = 'Toggle Trouble diagnostics' })
+
+  vim.keymap.set("n", "<leader>pws", function()
+    local word = vim.fn.expand("<cword>")
+    builtin.grep_string({ search = word })
+  end)
 
   vim.keymap.set('n', '<leader>tr', function()
     trouble.toggle("lsp_references")

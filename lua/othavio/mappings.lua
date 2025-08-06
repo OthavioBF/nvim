@@ -53,10 +53,6 @@ vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
 vim.keymap.set("n", "<C-j>", function() harpoon:list():select(2) end)
 vim.keymap.set("n", "<C-k>", function() harpoon:list():select(3) end)
 vim.keymap.set("n", "<C-l>", function() harpoon:list():select(4) end)
-vim.keymap.set("n", "<leader><C-h>", function() harpoon:list():replace_at(1) end)
-vim.keymap.set("n", "<leader><C-j>", function() harpoon:list():replace_at(2) end)
-vim.keymap.set("n", "<leader><C-k>", function() harpoon:list():replace_at(3) end)
-vim.keymap.set("n", "<leader><C-l>", function() harpoon:list():replace_at(4) end)
 vim.keymap.set("n", "<leader>hc", function() harpoon:list():clear() end)
 
 -- Comment
@@ -67,28 +63,6 @@ vim.keymap.set("v", "<leader>/", "gc", { desc = "toggle comment", remap = true }
 
 vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus window" })
-
--- Telescope
-
-local builtin = require("telescope.builtin")
-
-vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
-vim.keymap.set("n", "<leader>fz", builtin.lsp_document_symbols, {})
-vim.keymap.set("n", "<leader>gc", builtin.git_commits, {})
-vim.keymap.set("n", "<leader>gb", builtin.git_branches, {})
-vim.keymap.set("n", "<C-p>", builtin.git_files)
-vim.keymap.set("n", "<leader>pws", function()
-  local word = vim.fn.expand("<cword>")
-  builtin.grep_string({ search = word })
-end)
-vim.keymap.set("n", "<leader>pWs", function()
-  local word = vim.fn.expand("<cWORD>")
-  builtin.grep_string({ search = word })
-end)
-vim.keymap.set("n", "<leader>ps", function()
-  builtin.grep_string({ search = vim.fn.input("Grep > ") })
-end)
-vim.keymap.set("n", "<leader>vh", builtin.help_tags, {})
 
 -- Fugitive
 
@@ -116,8 +90,39 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     vim.keymap.set("n", "<leader>gP", function()
       vim.cmd.Git('pull')
     end, opts)
+
+    -- Branch operations
+    vim.keymap.set("n", "<leader>gb", function()
+      local branch = vim.fn.input("New branch name > ")
+      if branch ~= "" then
+        vim.cmd.Git('checkout -b ' .. branch)
+      end
+    end, opts)
+
+    vim.keymap.set("n", "<leader>gB", function()
+      local branch = vim.fn.input("Switch to branch > ")
+      if branch ~= "" then
+        vim.cmd.Git('checkout ' .. branch)
+      end
+    end, opts)
+
+    vim.keymap.set("n", "<leader>gpu", function()
+      -- Get current branch name
+      local branch = vim.fn.system("git branch --show-current"):gsub("\n", "")
+      if branch ~= "" then
+        vim.cmd.Git('push -u origin ' .. branch)
+      else
+        print("Could not determine current branch")
+      end
+    end, opts)
   end,
 })
+
+-- Telescope
+
+local builtin = require("telescope.builtin")
+
+vim.keymap.set("n", "<C-p>", builtin.git_files)
 
 vim.keymap.set("n", "<leader>gl", function()
   local file = vim.fn.expand("%")
@@ -141,58 +146,3 @@ end)
 -- Php utils
 
 vim.keymap.set("n", "<leader>ru", "<cmd>%s/utf8_encode(\\([^)]*\\))/\\1/g<CR>", { silent = true })
-
--- vim.keymap.set("n", "<leader>n", function()
---   local env_file = vim.fs.find(".env", { upward = true, type = "file" })[1]
---
---   if not env_file then
---     print("'.env' file not found! Cannot determine project root.")
---     return
---   end
---
---   local project_root = vim.fs.dirname(env_file)
---
---   local file = vim.fn.expand("%:p")
---
---   if not file:find(project_root, 1, true) then
---     print("File is outside the project directory!")
---     return
---   end
---
---   local path = file:sub(#project_root + 1)
---   if not path then
---     print("Error extracting relative path!")
---     return
---   end
---
---   local ftp_host = vim.env.FTP_HOST
---   local ftp_port = vim.env.FTP_PORT
---   local ftp_user = vim.env.FTP_USER
---   local ftp_pass = vim.env.FTP_PASS
---   local ftp_remote_path = vim.env.FTP_REMOTE_PATH
---
---   if not (ftp_host and ftp_port and ftp_user and ftp_pass and ftp_remote_path) then
---     print("FTP credentials not set! Check your .env file.")
---     return
---   end
---
---   local cmd = string.format(
---     "lftp -u '%s','%s' -p %s %s -e 'put %s -o %s; bye'",
---     ftp_user, ftp_pass, ftp_port, ftp_host, file, ftp_remote_path .. path
---   )
---
---   local handle = io.popen(cmd)
---   if not handle then
---     vim.notify("Failed to start FTP upload command.", vim.log.levels.ERROR)
---     return
---   end
---
---   local result = handle:read("*a")
---   local ok, _, code = handle:close()
---
---   if ok then
---     vim.notify("Upload successful: " .. ftp_remote_path .. path, vim.log.levels.INFO)
---   else
---     vim.notify("Upload failed with code " .. tostring(code) .. ":\n" .. result, vim.log.levels.ERROR)
---   end
--- end)
