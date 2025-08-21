@@ -21,6 +21,7 @@ local options = {
 
   sources = {
     { name = "nvim_lsp" },
+    { name = "vim-dadbod-completion" },
     { name = "buffer" },
     { name = "path" },
   },

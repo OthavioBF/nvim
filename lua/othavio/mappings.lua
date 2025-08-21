@@ -146,3 +146,41 @@ end)
 -- Php utils
 
 vim.keymap.set("n", "<leader>ru", "<cmd>%s/utf8_encode(\\([^)]*\\))/\\1/g<CR>", { silent = true })
+
+-- Dadbod
+
+vim.keymap.set("n", "<leader>db", "<cmd>DBUIToggle<CR>", { desc = "Toggle DBUI" })
+vim.keymap.set("n", "<leader>df", "<cmd>DBUIFindBuffer<CR>", { desc = "Find DB buffer" })
+vim.keymap.set("n", "<leader>dr", "<cmd>DBUIRenameBuffer<CR>", { desc = "Rename DB buffer" })
+vim.keymap.set("n", "<leader>dq", "<cmd>DBUILastQueryInfo<CR>", { desc = "Last query info" })
+vim.keymap.set("n", "<leader>da", "<cmd>DBUIAddConnection<CR>", { desc = "Add DB connection" })
+
+-- Query execution mappings
+vim.keymap.set("n", "<leader>de", "<Plug>(DBUI_ExecuteQuery)", { desc = "Execute query" })
+vim.keymap.set("v", "<leader>de", "<cmd>lua execute_selected_sql()<CR>", { desc = "Execute selected query" })
+vim.keymap.set("n", "<leader>dS", "<Plug>(DBUI_SaveQuery)", { desc = "Save query" })
+
+-- Alternative visual execution mapping
+vim.keymap.set("v", "<leader>dx", "<cmd>lua execute_selected_sql()<CR>", { desc = "Execute selection" })
+
+-- SQL completion mappings (for SQL files)
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "sql", "mysql", "plsql" },
+  callback = function()
+    local opts = { buffer = true, silent = true }
+    -- Manual completion trigger
+    vim.keymap.set("i", "<C-x><C-o>", "<C-x><C-o>", opts)
+    -- Alternative completion trigger
+    vim.keymap.set("i", "<C-Space>", function()
+      require('cmp').complete()
+    end, opts)
+    
+    -- Query execution in SQL buffers
+    vim.keymap.set("n", "<leader>de", "<Plug>(DBUI_ExecuteQuery)", { buffer = true, desc = "Execute query" })
+    vim.keymap.set("v", "<leader>de", "<cmd>lua execute_selected_sql()<CR>", { buffer = true, desc = "Execute selected query" })
+    vim.keymap.set("v", "<leader>dx", "<cmd>lua execute_selected_sql()<CR>", { buffer = true, desc = "Execute selection" })
+    
+    -- Quick execution with Enter in visual mode
+    vim.keymap.set("v", "<CR>", "<cmd>lua execute_selected_sql()<CR>", { buffer = true, desc = "Execute selection" })
+  end,
+})
