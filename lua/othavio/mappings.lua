@@ -163,6 +163,10 @@ vim.keymap.set("n", "<leader>dS", "<Plug>(DBUI_SaveQuery)", { desc = "Save query
 -- Alternative visual execution mapping
 vim.keymap.set("v", "<leader>dx", "<cmd>lua execute_selected_sql()<CR>", { desc = "Execute selection" })
 
+-- Debug mappings
+vim.keymap.set("n", "<leader>di", "<cmd>DBUILastQueryInfo<CR>", { desc = "Show last query info" })
+vim.keymap.set("n", "<leader>dt", "<cmd>lua print('Current DB: ' .. (vim.b.db or 'None'))<CR>", { desc = "Show current DB" })
+
 -- SQL completion mappings (for SQL files)
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "sql", "mysql", "plsql" },
